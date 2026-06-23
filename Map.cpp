@@ -19,8 +19,17 @@ void Map::loadFromFile(const std::string& filename) {
 
     std::string line;
     while (std::getline(file, line)) {
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+
+        if (!line.empty() && line.back() == '\n') {
+            line.pop_back();
+        }
+
         mGrid.push_back(line);
     }
+    
     file.close();
 }
 
@@ -37,6 +46,14 @@ void Map::draw(sf::RenderWindow& window) {
                 mTile.setFillColor(sf::Color::Green);
                 mTile.setPosition({col * mTileSize, row * mTileSize});
                 window.draw(mTile);
+            } else if (tileType == '3') { // Наш финиш
+                mTile.setFillColor(sf::Color::Yellow);
+                mTile.setPosition({col * mTileSize, row * mTileSize});
+                window.draw(mTile);
+            } else if (tileType == '4') { 
+                mTile.setFillColor(sf::Color(150, 50, 50)); 
+                mTile.setPosition({col * mTileSize, row * mTileSize});
+                window.draw(mTile);
             }
         }
     }
@@ -44,7 +61,7 @@ void Map::draw(sf::RenderWindow& window) {
 
 size_t Map::getRowCount() const { return mGrid.size(); }
 size_t Map::getColCount() const { return mGrid.empty() ? 0 : mGrid[0].size(); }
-float Map::getTileSize() const { return mTileSize; };
+float Map::getTileSize() const { return mTileSize; }
 
 char Map::getTileAt(size_t row, size_t col) const {
     if (row < mGrid.size() && col < mGrid[row].size()) {
