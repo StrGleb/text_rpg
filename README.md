@@ -35,31 +35,42 @@
 ## Структура проекта
 
 ```text
-src/
-  main.cpp
-  core/
-    Game.h
-    Game.cpp
-  entities/
-    Player.h
-    Player.cpp
-    Enemy.h
-    Enemy.cpp
-  world/
-    Map.h
-    Map.cpp
-  ui/
-    Menu.h
-    Menu.cpp
+the_boys_platformer/
+├── assets/                  # Графические ресурсы игры
+│   ├── butcher_idle.png     # Спрайт персонажа в покое
+│   ├── butcher_jump.png     # Спрайт прыжка
+│   ├── butcher0-5.png       # Кадры анимации бега
+│   ├── homelander_idle.png  # Спрайт Homelander
+│   ├── vought.png           # Спрайт обычного врага
+│   ├── gorod.png            # Фон города
+│   ├── furgon.png           # Финишная машина
+│   ├── asfalt.png           # Текстура бетонного блока
+│   ├── kamen_kirpich.png    # Текстура кирпичного блока
+│   └── ship.png             # Текстура шипов
+├── levels/                  # Текстовые карты уровней
+│   ├── level1.txt           # Первый уровень
+│   ├── level2.txt           # Второй уровень
+│   ├── level3.txt           # Третий уровень с Homelander
+│   └── level_guide.txt      # Обозначения символов карты
+├── src/                     # Исходный код игры
+│   ├── main.cpp             # Точка входа и запуск игрового цикла
+│   ├── core/                # Ядро игры и управление состояниями
+│   │   ├── Game.h           # Главный класс игры
+│   │   └── Game.cpp         # Логика состояний, уровней, камеры и рендера
+│   ├── entities/            # Игровые сущности
+│   │   ├── Player.h         # Интерфейс игрока
+│   │   ├── Player.cpp       # Движение, прыжок, анимации, столкновения
+│   │   ├── Enemy.h          # Интерфейс врагов
+│   │   └── Enemy.cpp        # Логика врагов и босса Homelander
+│   ├── world/               # Игровой мир
+│   │   ├── Map.h            # Интерфейс карты уровня
+│   │   └── Map.cpp          # Загрузка TXT-карт и отрисовка блоков
+│   └── ui/                  # Пользовательский интерфейс
+│       ├── Menu.h           # Интерфейс главного меню
+│       └── Menu.cpp         # Кнопки, оформление меню и экранов
+├── README.md                # Описание проекта, сборки и структуры
+└── .gitignore               # Исключение артефактов сборки и служебных файлов
 
-levels/
-  level1.txt
-  level2.txt
-  level3.txt
-  level_guide.txt
-
-assets/
-  *.png
 ```
 
 ### Кто за что отвечает
