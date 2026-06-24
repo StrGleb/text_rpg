@@ -1,5 +1,5 @@
-#include "Player.h"
-#include "Map.h"
+#include "entities/Player.h"
+#include "world/Map.h"
 #include <stdexcept>
 #include <array>
 #include <filesystem>
@@ -63,7 +63,7 @@ bool touchesSpike(const sf::FloatRect& playerBounds, const Map& map) {
 }
 
 void respawnPlayer(sf::Sprite& sprite, float& velocityY, bool& isGrounded) {
-    sprite.setPosition({140.f, kRespawnY});
+    sprite.setPosition({480.f, kRespawnY});
     velocityY = 0.f;
     isGrounded = false;
 }
@@ -131,9 +131,10 @@ Player::Player() : mSprite(mIdleTexture) {
     mSprite.setScale({1.2f, 1.2f});
 }
 
+bool Player::update(const Map& map) {
+    bool didRespawn = false;
 
-void Player::update(const Map& map) {
-    // 1. ГОРИЗОНТАЛЬНОЕ ДВИЖЕНИЕ
+    // ГОРИЗОНТАЛЬНОЕ ДВИЖЕНИЕ
     float moveX = 0.f;
     if (mIsMovingLeft)  moveX -= mSpeed;
     if (mIsMovingRight) moveX += mSpeed;
@@ -157,7 +158,7 @@ void Player::update(const Map& map) {
         }
     }
 
-    // 2. ВЕРТИКАЛЬНОЕ ДВИЖЕНИЕ И ГРАВИТАЦИЯ
+    // ВЕРТИКАЛЬНОЕ ДВИЖЕНИЕ
     if (mIsJumping && mIsGrounded) {
         mVelocityY = kJumpVelocity;
         mIsGrounded = false;
@@ -201,23 +202,15 @@ void Player::update(const Map& map) {
     playerBounds = getPlayerHitbox(mSprite);
     if (touchesSpike(playerBounds, map)) {
         respawnPlayer(mSprite, mVelocityY, mIsGrounded);
+        didRespawn = true;
     }
 
     // Смерть в яме
     if (mSprite.getPosition().y > 560.f) {
         respawnPlayer(mSprite, mVelocityY, mIsGrounded);
+        didRespawn = true;
     }
 
-    // Финиш
-    size_t playerRow = static_cast<size_t>((mSprite.getPosition().y) / tileSize);
-    size_t playerCol = static_cast<size_t>((mSprite.getPosition().x) / tileSize);
-    if (map.getTileAt(playerRow, playerCol) == '3') {
-        respawnPlayer(mSprite, mVelocityY, mIsGrounded);
-    }
-
-    // ==========================================
-    // СТАБИЛЬНЫЙ БЛОК АНИМАЦИИ
-    // ==========================================
     if (!mIsGrounded) {
         mSprite.setTexture(mJumpTexture); 
     } 
@@ -233,11 +226,27 @@ void Player::update(const Map& map) {
         mCurrentFrame = -1;
     }
 
-    // Поворот спрайта
+    // Поворот
     if (mIsMovingLeft)  mSprite.setScale({-1.2f, 1.2f});
     if (mIsMovingRight) mSprite.setScale({1.2f, 1.2f});
+
+    return didRespawn;
 }
 
 void Player::draw(sf::RenderWindow& window) {
     window.draw(mSprite);
+}
+
+void Player::respawn() {
+    respawnPlayer(mSprite, mVelocityY, mIsGrounded);
+}
+
+void Player::bounceFromEnemy() {
+    mVelocityY = kJumpVelocity * 0.75f;
+    mIsGrounded = false;
+    mSprite.move({0.f, -6.f});
+}
+
+sf::FloatRect Player::getBounds() const {
+    return getPlayerHitbox(mSprite);
 }

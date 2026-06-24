@@ -23,12 +23,16 @@ class Player {
 
 public:
     Player();
-    void update(const Map& map);
+    bool update(const Map& map);
     void draw(sf::RenderWindow& window);
+    void respawn();
+    void bounceFromEnemy();
 
     void setMovingLeft(bool move) { mIsMovingLeft = move; }
     void setMovingRight(bool move) { mIsMovingRight = move; }
     void setJumping(bool jump) { mIsJumping = jump; }
 
     sf::Vector2f getPosition() const { return mSprite.getPosition(); }
+    sf::FloatRect getBounds() const;
+    float getVelocityY() const { return mVelocityY; }
 };
